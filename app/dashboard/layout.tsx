@@ -9,9 +9,9 @@ export default function DashboardLayout({ children }: Props) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
+      <main className="w-full">
         <SidebarTrigger />
-        {children}
+        <div className="w-full px-5">{children}</div>
       </main>
     </SidebarProvider>
   );

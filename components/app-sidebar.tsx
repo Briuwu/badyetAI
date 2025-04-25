@@ -1,4 +1,11 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import {
+  BotMessageSquare,
+  Goal,
+  Home,
+  Inbox,
+  PieChart,
+  PlusCircleIcon,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -6,52 +13,73 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { Separator } from "./ui/separator";
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: "Dashboard",
+    url: "/dashboard",
     icon: Home,
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: "Transactions",
+    url: "/dashboard/transactions",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
+    title: "Budgets",
+    url: "/dashboard/budgets",
+    icon: PieChart,
   },
   {
-    title: "Search",
-    url: "#",
-    icon: Search,
+    title: "Goals",
+    url: "/dashboard/goals",
+    icon: Goal,
   },
   {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    title: "AI Assistant",
+    url: "/dashboard/assistant",
+    icon: BotMessageSquare,
   },
 ];
 
 export const AppSidebar = () => {
   return (
     <Sidebar>
+      <SidebarHeader className="py-2">
+        <Link href="/dashboard">
+          <span className="text-3xl font-semibold text-slate-800">
+            BadyetAI
+          </span>
+        </Link>
+      </SidebarHeader>
+      <Separator className="mb-5" />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
+          <SidebarGroupLabel className="sr-only">Application</SidebarGroupLabel>
+          <SidebarGroupContent className="space-y-3">
+            <SidebarMenu>
+              <SidebarMenuItem className="flex items-center gap-2">
+                <SidebarMenuButton
+                  tooltip="Quick Create"
+                  className="text-primary-foreground hover:text-primary-foreground active:text-primary-foreground min-w-8 bg-slate-800 py-6 duration-200 ease-linear hover:bg-slate-800/90 active:bg-slate-800/90"
+                >
+                  <PlusCircleIcon />
+                  <span>Quick Create</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton asChild className="py-6">
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
