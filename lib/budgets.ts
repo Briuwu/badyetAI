@@ -27,6 +27,35 @@ export async function createBudget(
 }
 
 /**
+ * Get available budgets for the current user
+ * @returns Array of budgets with spent and remaining amounts
+ */
+
+export async function getAvailableBudgets() {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) throw new Error("User not authenticated");
+
+  const { data, error } = await supabase
+    .from("budgets")
+    .select("*")
+    .eq("user_id", user.user.id);
+
+  if (error) throw error;
+  if (!data) throw new Error("No budgets found");
+
+  // Filter out budgets that are available for spending, i.e., those that have not been fully spent and have remaining amounts
+  const availableBudgets = data
+    .filter((budget) => budget.spent < budget.amount)
+    .map((budget) => ({
+      value: budget.id,
+      label: budget.name,
+    }));
+
+  return availableBudgets as { value: string; label: string }[];
+}
+
+/**
  * Get all budgets for the current user
  * @returns Array of budgets with spent and remaining amounts
  */

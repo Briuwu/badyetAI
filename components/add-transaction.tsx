@@ -9,8 +9,11 @@ import {
 import { Button } from "./ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import { TransactionForm } from "./transaction-form";
+import { getAvailableBudgets } from "@/lib/budgets";
 
 export const AddTransaction = async () => {
+  const budgetOptions = await getAvailableBudgets();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -26,7 +29,7 @@ export const AddTransaction = async () => {
             transactions to keep track of your finances.
           </DialogDescription>
         </DialogHeader>
-        <TransactionForm />
+        <TransactionForm budgetOpts={budgetOptions} />
       </DialogContent>
     </Dialog>
   );

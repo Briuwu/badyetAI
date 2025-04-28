@@ -1,10 +1,18 @@
 import { Tables } from "@/utils/supabase/database.types";
+import { z } from "zod";
+
+export const transactionSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
+  description: z.string(),
+  date: z.date(),
+  type: z.enum(["income", "expense"]),
+  category: z.string(),
+  budgetCategory: z.string(),
+});
 
 export type Transactions = Tables<"transactions">;
-export type AddTransaction = Omit<
-  Transactions,
-  "id" | "created_at" | "updated_at" | "user_id"
->;
+export type AddTransaction = z.infer<typeof transactionSchema>;
 
 export type Goals = Tables<"goals">;
 

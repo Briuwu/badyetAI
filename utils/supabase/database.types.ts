@@ -15,6 +15,7 @@ export type Database = {
           created_at: string | null
           id: string
           name: string
+          spent: number
           updated_at: string | null
           user_id: string
         }
@@ -23,6 +24,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           name: string
+          spent?: number
           updated_at?: string | null
           user_id: string
         }
@@ -31,6 +33,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           name?: string
+          spent?: number
           updated_at?: string | null
           user_id?: string
         }
@@ -129,6 +132,7 @@ export type Database = {
       transactions: {
         Row: {
           amount: number
+          budget_id: string | null
           category: string
           created_at: string | null
           description: string | null
@@ -141,6 +145,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          budget_id?: string | null
           category: string
           created_at?: string | null
           description?: string | null
@@ -153,6 +158,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          budget_id?: string | null
           category?: string
           created_at?: string | null
           description?: string | null
@@ -163,7 +169,15 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "transactions_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

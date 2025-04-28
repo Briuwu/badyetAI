@@ -7,6 +7,7 @@ import {
   deleteTransaction,
 } from "@/lib/transactions";
 import { AddTransaction } from "@/lib/types";
+import { formatDate } from "date-fns";
 
 /**
  * Add a new transaction
@@ -17,17 +18,19 @@ export async function addTransaction(data: AddTransaction) {
     const {
       title,
       amount,
-      transaction_date: transactionDate,
+      date: transactionDate,
       category,
-      transaction_type: transactionType,
+      type: transactionType,
       description,
+      budgetCategory,
     } = data;
     if (
       !title ||
       isNaN(amount) ||
       !transactionDate ||
       !category ||
-      !transactionType
+      !transactionType ||
+      !budgetCategory
     ) {
       return { error: "Missing required fields" };
     }
@@ -37,9 +40,10 @@ export async function addTransaction(data: AddTransaction) {
       title,
       amount,
       description,
-      transaction_date: transactionDate,
+      transaction_date: formatDate(transactionDate, "yyyy-MM-dd"),
       category: category,
       transaction_type: transactionType,
+      budget_id: budgetCategory,
     });
 
     // Revalidate the transactions page to show the new transaction

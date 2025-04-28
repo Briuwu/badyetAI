@@ -11,29 +11,25 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { CategorySelector } from "@/components/category-selector";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import { expenses, income } from "@/lib/constant";
 import { FieldInfo } from "./field-info";
 import { addTransaction } from "@/app/actions/transactions";
+import { transactionSchema } from "@/lib/types";
+import { toast } from "sonner";
 
-const transactionSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  amount: z.number().min(0.01, "Amount must be greater than 0"),
-  description: z.string(),
-  date: z.date(),
-  type: z.enum(["income", "expense"]),
-  category: z.string(),
-  budgetCategory: z.string(),
-});
+type Props = {
+  budgetOpts: { label: string; value: string }[];
+};
 
-export function TransactionForm() {
+export function TransactionForm({ budgetOpts }: Props) {
   const [isPending, startTransition] = useTransition();
   const [transactionType, setTransactionType] = useState<"income" | "expense">(
     "expense",
@@ -48,6 +44,7 @@ export function TransactionForm() {
       date: new Date(),
       type: "expense" as "expense" | "income",
       category: "",
+      budgetCategory: "",
     },
     onSubmit: ({ value }) => {
       console.log("Form submitted:", value);
@@ -58,12 +55,17 @@ export function TransactionForm() {
             title: value.title,
             amount: value.amount,
             description: value.description,
-            transaction_date: format(value.date, "yyyy-MM-dd"),
             category: value.category,
-            transaction_type: value.type,
+            type: transactionType,
+            date: value.date,
+            budgetCategory: value.budgetCategory,
           });
+          toast.success("Transaction added successfully!");
+          form.reset();
+          setSelectedCategory(null);
         } catch (error) {
           console.error("Error adding transaction:", error);
+          toast.error("Failed to add transaction. Please try again.");
         }
       });
     },
@@ -108,6 +110,32 @@ export function TransactionForm() {
             }}
             isPending={isPending}
           />
+
+          <div className="space-y-2">
+            <Label htmlFor="budgetCategory">Budget Category</Label>
+            <form.Field name="budgetCategory">
+              {(field) => (
+                <>
+                  <Select
+                    onValueChange={(value) => field.handleChange(value)}
+                    disabled={isPending}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select budget category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {budgetOpts.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FieldInfo field={field} />
+                </>
+              )}
+            </form.Field>
+          </div>
         </TabsContent>
         <TabsContent value="income" className="space-y-4 pt-4">
           <CategorySelector
