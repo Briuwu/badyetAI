@@ -10,7 +10,7 @@ import { Button } from "./ui/button";
 import { PlusCircleIcon } from "lucide-react";
 import { TransactionForm } from "./transaction-form";
 
-export const AddTransaction = () => {
+export const AddTransaction = async () => {
   return (
     <Dialog>
       <DialogTrigger asChild>

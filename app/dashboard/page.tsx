@@ -7,7 +7,7 @@ import { AddTransaction } from "@/components/add-transaction";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   return (
     <div className="w-full">
       <div className="flex items-center justify-between gap-5">
@@ -38,8 +38,8 @@ export default function DashboardPage() {
             <Button variant="link" asChild>
               <Link href="/dashboard/transactions">View All</Link>
             </Button>
-            <Transactions />
           </div>
+          <Transactions />
         </div>
         <Goals />
       </div>

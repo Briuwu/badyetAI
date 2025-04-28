@@ -12,144 +12,158 @@ export type Database = {
       budgets: {
         Row: {
           amount: number
-          category_id: string | null
           created_at: string | null
-          end_date: string | null
           id: string
-          period: string | null
-          start_date: string
-          user_id: string | null
+          name: string
+          updated_at: string | null
+          user_id: string
         }
         Insert: {
           amount: number
-          category_id?: string | null
           created_at?: string | null
-          end_date?: string | null
           id?: string
-          period?: string | null
-          start_date: string
-          user_id?: string | null
+          name: string
+          updated_at?: string | null
+          user_id: string
         }
         Update: {
           amount?: number
-          category_id?: string | null
           created_at?: string | null
-          end_date?: string | null
           id?: string
-          period?: string | null
-          start_date?: string
-          user_id?: string | null
+          name?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      goal_contributions: {
+        Row: {
+          amount: number
+          contribution_date: string
+          created_at: string | null
+          goal_id: string
+          id: string
+          transaction_id: string
+        }
+        Insert: {
+          amount: number
+          contribution_date: string
+          created_at?: string | null
+          goal_id: string
+          id?: string
+          transaction_id: string
+        }
+        Update: {
+          amount?: number
+          contribution_date?: string
+          created_at?: string | null
+          goal_id?: string
+          id?: string
+          transaction_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "budgets_category_id_fkey"
-            columns: ["category_id"]
+            foreignKeyName: "goal_contributions_goal_id_fkey"
+            columns: ["goal_id"]
             isOneToOne: false
-            referencedRelation: "categories"
+            referencedRelation: "goals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "goal_contributions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
         ]
       }
-      categories: {
-        Row: {
-          color: string | null
-          created_at: string | null
-          icon: string | null
-          id: string
-          name: string
-          user_id: string | null
-        }
-        Insert: {
-          color?: string | null
-          created_at?: string | null
-          icon?: string | null
-          id?: string
-          name: string
-          user_id?: string | null
-        }
-        Update: {
-          color?: string | null
-          created_at?: string | null
-          icon?: string | null
-          id?: string
-          name?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       goals: {
         Row: {
+          category: string | null
+          color: string | null
           created_at: string | null
           deadline: string | null
+          description: string | null
           id: string
           name: string
-          saved_amount: number | null
+          priority: string | null
+          saved_amount: number
+          start_date: string
           target_amount: number
-          user_id: string | null
+          updated_at: string | null
+          user_id: string
         }
         Insert: {
+          category?: string | null
+          color?: string | null
           created_at?: string | null
           deadline?: string | null
+          description?: string | null
           id?: string
           name: string
-          saved_amount?: number | null
+          priority?: string | null
+          saved_amount?: number
+          start_date?: string
           target_amount: number
-          user_id?: string | null
+          updated_at?: string | null
+          user_id: string
         }
         Update: {
+          category?: string | null
+          color?: string | null
           created_at?: string | null
           deadline?: string | null
+          description?: string | null
           id?: string
           name?: string
-          saved_amount?: number | null
+          priority?: string | null
+          saved_amount?: number
+          start_date?: string
           target_amount?: number
-          user_id?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }
       transactions: {
         Row: {
           amount: number
-          category_id: string | null
+          category: string
           created_at: string | null
-          date: string
+          description: string | null
           id: string
-          note: string | null
-          title: string | null
-          type: string
-          user_id: string | null
+          title: string
+          transaction_date: string
+          transaction_type: string
+          updated_at: string | null
+          user_id: string
         }
         Insert: {
           amount: number
-          category_id?: string | null
+          category: string
           created_at?: string | null
-          date: string
+          description?: string | null
           id?: string
-          note?: string | null
-          title?: string | null
-          type: string
-          user_id?: string | null
+          title: string
+          transaction_date: string
+          transaction_type: string
+          updated_at?: string | null
+          user_id: string
         }
         Update: {
           amount?: number
-          category_id?: string | null
+          category?: string
           created_at?: string | null
-          date?: string
+          description?: string | null
           id?: string
-          note?: string | null
-          title?: string | null
-          type?: string
-          user_id?: string | null
+          title?: string
+          transaction_date?: string
+          transaction_type?: string
+          updated_at?: string | null
+          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {

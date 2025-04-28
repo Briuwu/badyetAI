@@ -1,6 +1,4 @@
 import { GoalGrid } from "./components/goal-grid";
-import { GoalProgress } from "./components/goal-progress";
-import { GoalSummary } from "./components/goal-summary";
 
 export default function GoalsPage() {
   return (
@@ -12,8 +10,6 @@ export default function GoalsPage() {
         </p>
       </div>
 
-      <GoalSummary />
-      <GoalProgress />
       <GoalGrid />
     </div>
   );
