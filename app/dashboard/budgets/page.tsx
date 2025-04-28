@@ -1,6 +1,33 @@
+import { getBudgets } from "@/lib/budgets";
 import { BudgetGrid } from "./components/budget-grid";
+import { getTransactions } from "@/lib/transactions";
 
-export default function BudgetsPage() {
+export default async function BudgetsPage() {
+  const budgets = await getBudgets();
+  const transactions = await getTransactions();
+
+  const transformedBudgets = budgets.map((budget) => {
+    const spent = transactions.reduce((acc, transaction) => {
+      if (transaction.budget_id === budget.id) {
+        if (transaction.transaction_type === "expense") {
+          return acc + transaction.amount;
+        }
+      }
+      return acc;
+    }, 0);
+
+    const categories = transactions
+      .filter((transaction) => transaction.budget_id === budget.id)
+      .map((transaction) => transaction.category);
+
+    return {
+      ...budget,
+      spent,
+      remaining: budget.amount - spent,
+      categories: [...new Set(categories)],
+    };
+  });
+
   return (
     <div className="container mx-auto space-y-8 p-6">
       <div className="flex flex-col space-y-2">
@@ -11,7 +38,7 @@ export default function BudgetsPage() {
         </p>
       </div>
 
-      <BudgetGrid />
+      <BudgetGrid budgets={transformedBudgets} />
     </div>
   );
 }

@@ -110,32 +110,6 @@ export function TransactionForm({ budgetOpts }: Props) {
             }}
             isPending={isPending}
           />
-
-          <div className="space-y-2">
-            <Label htmlFor="budgetCategory">Budget Category</Label>
-            <form.Field name="budgetCategory">
-              {(field) => (
-                <>
-                  <Select
-                    onValueChange={(value) => field.handleChange(value)}
-                    disabled={isPending}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select budget category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {budgetOpts.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FieldInfo field={field} />
-                </>
-              )}
-            </form.Field>
-          </div>
         </TabsContent>
         <TabsContent value="income" className="space-y-4 pt-4">
           <CategorySelector
@@ -151,6 +125,32 @@ export function TransactionForm({ budgetOpts }: Props) {
       </Tabs>
 
       <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="budgetCategory">Budget Category</Label>
+          <form.Field name="budgetCategory">
+            {(field) => (
+              <>
+                <Select
+                  onValueChange={(value) => field.handleChange(value)}
+                  disabled={isPending}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select budget category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {budgetOpts.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldInfo field={field} />
+              </>
+            )}
+          </form.Field>
+        </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>

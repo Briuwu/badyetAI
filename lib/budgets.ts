@@ -70,6 +70,7 @@ export async function getBudgets() {
     .eq("user_id", user.user.id);
 
   if (error) throw error;
+
   return data as Budgets[];
 }
 

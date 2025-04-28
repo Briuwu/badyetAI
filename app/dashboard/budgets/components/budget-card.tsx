@@ -17,15 +17,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Budgets } from "@/lib/types";
+import { formatDate } from "date-fns";
 
 interface BudgetCardProps {
-  budget: {
-    id: number;
-    name: string;
-    amount: number;
-    spent: number;
+  budget: Budgets & {
     remaining: number;
-    period: string;
     categories: string[];
   };
 }
@@ -54,7 +51,9 @@ export function BudgetCard({ budget }: BudgetCardProps) {
       </CardHeader>
       <CardContent className="pb-2">
         <div className="mb-2 flex items-center justify-between">
-          <div className="text-muted-foreground text-sm">{budget.period}</div>
+          <div className="text-muted-foreground text-sm">
+            {formatDate(new Date(budget.created_at!), "MMMM yyyy")}
+          </div>
           <div className="flex space-x-1">
             {budget.categories.slice(0, 2).map((category) => (
               <Badge key={category} variant="outline" className="text-xs">

@@ -27,6 +27,25 @@ export async function createTransaction(
     .single();
 
   if (error) throw error;
+
+  if (data.transaction_type === "income") {
+    const { data: budget } = await supabase
+      .from("budgets")
+      .select("*")
+      .eq("id", data.budget_id!)
+      .eq("user_id", user.user.id)
+      .single();
+
+    if (budget) {
+      await supabase
+        .from("budgets")
+        .update({
+          amount: budget.amount + transaction.amount,
+        })
+        .eq("id", budget.id);
+    }
+  }
+
   return data;
 }
 
@@ -38,14 +57,40 @@ export async function createTransaction(
  */
 export async function getTransactions(limit = 50, offset = 0) {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User not authenticated");
+
   const { data, error } = await supabase
     .from("transactions")
     .select("*")
+    .eq("user_id", user.id)
     .order("transaction_date", { ascending: false })
     .range(offset, offset + limit - 1);
 
   if (error) throw error;
-  return data as Transactions[];
+
+  const { data: budgets } = await supabase
+    .from("budgets")
+    .select("*")
+    .eq("user_id", user.id);
+
+  if (!budgets) throw new Error("Budgets not found");
+
+  const transactionsWithBudgets = data.map((transaction) => {
+    const budget = budgets.find(
+      (budget) => budget.id === transaction.budget_id,
+    );
+    return {
+      ...transaction,
+      budget_name: budget ? budget.name : null,
+    };
+  });
+
+  return transactionsWithBudgets as (Transactions & {
+    budget_name: string | null;
+  })[];
 }
 
 /**
