@@ -22,6 +22,8 @@ export async function addBudget(formData: FormData) {
     const budget = await createBudget({
       name,
       amount,
+      remaining: 0,
+      spent: 0,
     });
 
     // Revalidate the budgets page to show the new budget
