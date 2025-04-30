@@ -9,13 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarIcon,
-  Target,
-  TrendingUp,
-  MoreHorizontal,
-  PiggyBank,
-} from "lucide-react";
+import { CalendarIcon, MoreHorizontal, PiggyBank } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,35 +17,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Goals } from "@/lib/types";
 
-interface GoalCardProps {
-  goal: {
-    id: number;
-    name: string;
-    targetAmount: number;
-    savedAmount: number;
-    remainingAmount: number;
-    deadline: string;
-    priority: string;
-    category: string;
-    color: string;
-  };
-}
-
-export function GoalCard({ goal }: GoalCardProps) {
+export function GoalCard({ goal }: { goal: Goals }) {
   const percentComplete = Math.round(
-    (goal.savedAmount / goal.targetAmount) * 100,
+    (goal.saved_amount / goal.target_amount) * 100,
   );
-  const deadlineDate = new Date(goal.deadline);
+  const deadlineDate = goal.deadline ? new Date(goal.deadline) : null;
   const today = new Date();
-  const daysRemaining = Math.ceil(
-    (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
-  );
-
-  // Calculate monthly amount needed to reach goal
-  const monthsRemaining = Math.ceil(daysRemaining / 30);
-  const monthlyAmountNeeded =
-    monthsRemaining > 0 ? Math.ceil(goal.remainingAmount / monthsRemaining) : 0;
+  const daysRemaining = deadlineDate
+    ? Math.ceil(
+        (deadlineDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      )
+    : "N/A";
 
   // Get color classes based on goal.color
   const getColorClasses = () => {
@@ -128,20 +106,28 @@ export function GoalCard({ goal }: GoalCardProps) {
           <div className="flex items-center">
             <Badge
               variant="outline"
-              className={`${colorClasses.text} border-current`}
+              className={`${colorClasses.text} border-current capitalize`}
             >
               {goal.priority} Priority
             </Badge>
           </div>
           <div className="text-muted-foreground flex items-center text-sm">
             <CalendarIcon className="mr-1 h-3 w-3" />
-            <span>{new Date(goal.deadline).toLocaleDateString()}</span>
+            <span>
+              {goal.deadline
+                ? new Date(goal.deadline).toLocaleDateString("en-PH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "No deadline"}
+            </span>
           </div>
         </div>
 
         <div className="mb-1 flex items-baseline justify-between">
           <div className="text-2xl font-bold">
-            ₱{goal.targetAmount.toLocaleString()}
+            ₱{goal.target_amount.toLocaleString()}
           </div>
           <div className="text-muted-foreground text-sm">Target Amount</div>
         </div>
@@ -153,17 +139,7 @@ export function GoalCard({ goal }: GoalCardProps) {
               <span>Saved</span>
             </div>
             <span className="font-medium">
-              ₱{goal.savedAmount.toLocaleString()}
-            </span>
-          </div>
-
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center">
-              <Target className="mr-1 h-4 w-4 text-slate-500" />
-              <span>Remaining</span>
-            </div>
-            <span className="font-medium">
-              ₱{goal.remainingAmount.toLocaleString()}
+              ₱{goal.saved_amount.toLocaleString()}
             </span>
           </div>
 
@@ -177,16 +153,6 @@ export function GoalCard({ goal }: GoalCardProps) {
               className="h-2 bg-white"
               indicatorClassName={colorClasses.progress}
             />
-          </div>
-
-          <div className="flex justify-between text-sm">
-            <div className="flex items-center">
-              <TrendingUp className="mr-1 h-4 w-4 text-slate-500" />
-              <span>Monthly Need</span>
-            </div>
-            <span className="font-medium">
-              ₱{monthlyAmountNeeded.toLocaleString()}
-            </span>
           </div>
         </div>
       </CardContent>

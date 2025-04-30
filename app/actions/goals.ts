@@ -14,17 +14,11 @@ import { AddGoal } from "@/lib/types";
  */
 export async function addGoal(data: AddGoal) {
   try {
-    const {
-      name,
-      target_amount: targetAmount,
-      deadline,
-      priority,
-      category,
-    } = data;
+    const { name, target_amount: targetAmount, priority, category } = data;
 
     // Validate required fields
-    if (!name || isNaN(targetAmount) || !deadline || !priority || !category) {
-      return { error: "Missing required fields" };
+    if (!name || isNaN(targetAmount) || !priority || !category) {
+      throw new Error("Missing required fields");
     }
 
     // Create the goal
@@ -36,7 +30,7 @@ export async function addGoal(data: AddGoal) {
     return { success: true, goal };
   } catch (error) {
     console.error("Error adding goal:", error);
-    return { error: "Failed to add goal" };
+    throw error;
   }
 }
 

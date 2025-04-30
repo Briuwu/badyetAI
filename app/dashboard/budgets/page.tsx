@@ -7,23 +7,12 @@ export default async function BudgetsPage() {
   const transactions = await getTransactions();
 
   const transformedBudgets = budgets.map((budget) => {
-    const spent = transactions.reduce((acc, transaction) => {
-      if (transaction.budget_id === budget.id) {
-        if (transaction.transaction_type === "expense") {
-          return acc + transaction.amount;
-        }
-      }
-      return acc;
-    }, 0);
-
     const categories = transactions
       .filter((transaction) => transaction.budget_id === budget.id)
       .map((transaction) => transaction.category);
 
     return {
       ...budget,
-      spent,
-      remaining: budget.amount - spent,
       categories: [...new Set(categories)],
     };
   });

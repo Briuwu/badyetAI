@@ -44,6 +44,23 @@ export async function createTransaction(
         })
         .eq("id", budget.id);
     }
+  } else {
+    const { data: budget } = await supabase
+      .from("budgets")
+      .select("*")
+      .eq("id", data.budget_id!)
+      .eq("user_id", user.user.id)
+      .single();
+
+    if (budget) {
+      await supabase
+        .from("budgets")
+        .update({
+          spent: budget.spent + transaction.amount,
+          remaining: budget.remaining - transaction.amount,
+        })
+        .eq("id", budget.id);
+    }
   }
 
   return data;

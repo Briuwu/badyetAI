@@ -2,7 +2,7 @@
 
 import { useForm } from "@tanstack/react-form";
 import { Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
@@ -30,8 +30,10 @@ import {
 } from "./create-goal-schema";
 import { Label } from "@/components/ui/label";
 import { FieldInfo } from "@/components/field-info";
+import { addGoal } from "@/app/actions/goals";
 
 export function CreateGoalForm() {
+  const [isPending, startTransition] = useTransition();
   const [openCategory, setOpenCategory] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [openPriority, setOpenPriority] = useState(false);
@@ -40,6 +42,27 @@ export function CreateGoalForm() {
     defaultValues: defaultGoalValues,
     onSubmit: async ({ value }) => {
       console.log(value);
+      startTransition(async () => {
+        if (!value) return;
+        try {
+          await addGoal({
+            ...value,
+            name: value.name!,
+            target_amount: value.target_amount!,
+            saved_amount: value.saved_amount || 0,
+            start_date: format(value.start_date!, "yyyy-MM-dd"),
+            deadline: value.deadline
+              ? format(value.deadline, "yyyy-MM-dd")
+              : null,
+            priority: value.priority!,
+            category: value.category!,
+            color: value.color!,
+            description: value.description || "",
+          });
+        } catch (error) {
+          console.error("Error creating goal:", error);
+        }
+      });
     },
     validators: {
       onSubmit: createGoalSchema,
@@ -63,6 +86,7 @@ export function CreateGoalForm() {
               placeholder="Enter goal name"
               value={field.state.value || ""}
               onChange={(e) => field.handleChange(e.target.value)}
+              disabled={isPending}
             />
             <FieldInfo field={field} />
           </div>
@@ -79,6 +103,7 @@ export function CreateGoalForm() {
                 placeholder="0.00"
                 value={field.state.value || ""}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                disabled={isPending}
               />
               <FieldInfo field={field} />
             </div>
@@ -94,6 +119,7 @@ export function CreateGoalForm() {
                 placeholder="0.00"
                 value={field.state.value || ""}
                 onChange={(e) => field.handleChange(e.target.valueAsNumber)}
+                disabled={isPending}
               />
               <FieldInfo field={field} />
             </div>
@@ -116,6 +142,7 @@ export function CreateGoalForm() {
                 onChange={(e) =>
                   field.handleChange(e.target.valueAsDate || new Date())
                 }
+                disabled={isPending}
                 placeholder="YYYY-MM-DD"
               />
               <FieldInfo field={field} />
@@ -138,6 +165,7 @@ export function CreateGoalForm() {
                   field.handleChange(e.target.valueAsDate || new Date())
                 }
                 placeholder="YYYY-MM-DD"
+                disabled={isPending}
               />
               <FieldInfo field={field} />
             </div>
@@ -159,6 +187,7 @@ export function CreateGoalForm() {
                       "w-full justify-between",
                       !field.state.value && "text-muted-foreground",
                     )}
+                    disabled={isPending}
                   >
                     {field.state.value || "Select priority"}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -215,6 +244,7 @@ export function CreateGoalForm() {
                       "w-full justify-between",
                       !field.state.value && "text-muted-foreground",
                     )}
+                    disabled={isPending}
                   >
                     {categoryOptions.find((c) => c.value === field.state.value)
                       ?.label || "Select category"}
@@ -271,13 +301,18 @@ export function CreateGoalForm() {
                     "w-full justify-between",
                     !field.state.value && "text-muted-foreground",
                   )}
+                  disabled={isPending}
                 >
                   <div className="flex items-center gap-2">
                     <div
                       className="h-4 w-4 rounded-full"
-                      style={{ backgroundColor: field.state.value }}
+                      style={{
+                        backgroundColor: colorOptions.find(
+                          (c) => c.label === field.state.value,
+                        )?.value,
+                      }}
                     />
-                    {colorOptions.find((c) => c.value === field.state.value)
+                    {colorOptions.find((c) => c.label === field.state.value)
                       ?.label || "Select color"}
                   </div>
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -294,7 +329,7 @@ export function CreateGoalForm() {
                           key={color.value}
                           value={color.label}
                           onSelect={() => {
-                            field.handleChange(color.value);
+                            field.handleChange(color.label);
                             setOpenColor(false);
                           }}
                         >
@@ -333,6 +368,7 @@ export function CreateGoalForm() {
               placeholder="Enter goal description"
               value={field.state.value || ""}
               onChange={(e) => field.handleChange(e.target.value)}
+              disabled={isPending}
             />
             <FieldInfo field={field} />
           </div>
@@ -340,7 +376,9 @@ export function CreateGoalForm() {
       </form.Field>
 
       <div className="flex justify-end gap-3">
-        <Button type="submit">Create Goal</Button>
+        <Button type="submit" disabled={isPending}>
+          Create Goal
+        </Button>
       </div>
     </form>
   );

@@ -1,7 +1,10 @@
+import { getGoals } from "@/lib/goals";
 import { CreateGoalModal } from "./components/create-goal-modal";
 import { GoalGrid } from "./components/goal-grid";
 
-export default function GoalsPage() {
+export default async function GoalsPage() {
+  const goals = await getGoals();
+
   return (
     <div className="container mx-auto space-y-8 p-6">
       <div className="flex items-center justify-between">
@@ -14,7 +17,13 @@ export default function GoalsPage() {
         <CreateGoalModal />
       </div>
 
-      <GoalGrid />
+      {goals.length > 0 ? (
+        <GoalGrid goals={goals} />
+      ) : (
+        <div className="py-10 text-center">
+          <p className="text-muted-foreground">No goals found.</p>
+        </div>
+      )}
     </div>
   );
 }

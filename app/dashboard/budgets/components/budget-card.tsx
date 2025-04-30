@@ -22,7 +22,6 @@ import { formatDate } from "date-fns";
 
 interface BudgetCardProps {
   budget: Budgets & {
-    remaining: number;
     categories: string[];
   };
 }
@@ -101,7 +100,14 @@ export function BudgetCard({ budget }: BudgetCardProps) {
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
               <span>{percentSpent}% used</span>
-              <span>{100 - percentSpent}% remaining</span>
+              {/* check if the remaining is negative value */}
+              {budget.remaining < 0 ? (
+                <span className="text-red-500">
+                  ₱{Math.abs(budget.remaining).toLocaleString()} over budget
+                </span>
+              ) : (
+                <span>{100 - percentSpent}% remaining</span>
+              )}
             </div>
             <Progress
               value={percentSpent}

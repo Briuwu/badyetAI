@@ -45,7 +45,6 @@ import { BudgetCard } from "./budget-card";
 
 type Props = {
   budgets: (Budgets & {
-    remaining: number;
     categories: string[];
   })[];
 };

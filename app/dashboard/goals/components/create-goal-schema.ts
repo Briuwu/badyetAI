@@ -9,7 +9,7 @@ export const createGoalSchema = z.object({
     .nonnegative("Saved amount cannot be negative")
     .default(0),
   start_date: z.date().default(() => new Date()),
-  deadline: z.date(),
+  deadline: z.date().nullable(),
   priority: z.enum(["High", "Medium", "Low"]).default("Medium"),
   category: z.string().min(1, "Category is required"),
   color: z.string().default("#E3F2FD"), // Default light blue background
@@ -23,6 +23,7 @@ export type CreateGoalFormValues = z.infer<typeof createGoalSchema>;
 export const defaultGoalValues: Partial<CreateGoalFormValues> = {
   saved_amount: 0,
   start_date: new Date(),
+  deadline: null,
   priority: "Medium",
   color: "#E3F2FD",
   description: "",

@@ -16,6 +16,7 @@ export async function createGoal(goal: AddGoal) {
     .from("goals")
     .insert({
       ...goal,
+      priority: goal.priority?.toLowerCase(),
       user_id: user.user.id,
     })
     .select()
@@ -37,8 +38,7 @@ export async function getGoals() {
   const { data, error } = await supabase
     .from("goals")
     .select("*")
-    .eq("user_id", user.user.id)
-    .order("deadline", { ascending: true });
+    .eq("user_id", user.user.id);
 
   if (error) throw error;
   return data as Goals[];

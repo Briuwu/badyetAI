@@ -44,9 +44,13 @@ export async function getAvailableBudgets() {
   if (error) throw error;
   if (!data) throw new Error("No budgets found");
 
-  // Filter out budgets that are available for spending, i.e., those that have not been fully spent and have remaining amounts
+  // Filter out budgets that are available for spending,
   const availableBudgets = data
-    .filter((budget) => budget.spent < budget.amount)
+    .filter((budget) => {
+      const spent = budget.spent || 0;
+      const remaining = budget.remaining || 0;
+      return spent < budget.amount && remaining > 0;
+    })
     .map((budget) => ({
       value: budget.id,
       label: budget.name,
