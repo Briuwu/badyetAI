@@ -1,3 +1,4 @@
+"use client";
 import { Bot, Goal, Home, Inbox, PieChart } from "lucide-react";
 
 import {
@@ -12,33 +13,39 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Separator } from "./ui/separator";
-
-// Menu items.
-const items = [
-  {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: Home,
-  },
-  {
-    title: "Transactions",
-    url: "/dashboard/transactions",
-    icon: Inbox,
-  },
-  {
-    title: "Budgets",
-    url: "/dashboard/budgets",
-    icon: PieChart,
-  },
-  {
-    title: "Goals",
-    url: "/dashboard/goals",
-    icon: Goal,
-  },
-];
+import { cn } from "@/lib/utils";
 
 export const AppSidebar = () => {
+  const pathname = usePathname();
+  // Menu items.
+  const items = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: Home,
+      active: pathname === "/dashboard",
+    },
+    {
+      title: "Transactions",
+      url: "/dashboard/transactions",
+      icon: Inbox,
+      active: pathname === "/dashboard/transactions",
+    },
+    {
+      title: "Budgets",
+      url: "/dashboard/budgets",
+      icon: PieChart,
+      active: pathname === "/dashboard/budgets",
+    },
+    {
+      title: "Goals",
+      url: "/dashboard/goals",
+      icon: Goal,
+      active: pathname === "/dashboard/goals",
+    },
+  ];
   return (
     <Sidebar>
       <SidebarHeader className="py-2">
@@ -67,7 +74,10 @@ export const AppSidebar = () => {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild className="py-6">
+                  <SidebarMenuButton
+                    asChild
+                    className={cn("py-6", item.active && "border border-black")}
+                  >
                     <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
