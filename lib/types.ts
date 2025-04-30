@@ -15,6 +15,7 @@ export type Transactions = Tables<"transactions">;
 export type AddTransaction = z.infer<typeof transactionSchema>;
 
 export type Goals = Tables<"goals">;
+export type AddGoal = Omit<Goals, "id" | "user_id" | "created_at">;
 
 export type Budgets = Tables<"budgets">;
 

@@ -1,18 +1,13 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import { Goals } from "./types";
+import { AddGoal, Goals } from "./types";
 
 /**
  * Create a new goal
  * @param goal Goal data without id, user_id, created_at, updated_at, saved_amount
  * @returns The created goal
  */
-export async function createGoal(
-  goal: Omit<
-    Goals,
-    "id" | "user_id" | "created_at" | "updated_at" | "saved_amount"
-  >,
-) {
+export async function createGoal(goal: AddGoal) {
   const supabase = await createClient();
   const { data: user } = await supabase.auth.getUser();
   if (!user.user) throw new Error("User not authenticated");
@@ -21,7 +16,6 @@ export async function createGoal(
     .from("goals")
     .insert({
       ...goal,
-      saved_amount: 0,
       user_id: user.user.id,
     })
     .select()
@@ -56,14 +50,18 @@ export async function getGoals() {
  * @returns Goal with progress information
  */
 export async function getGoalById(id: string) {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) throw new Error("User not authenticated");
   const { data, error } = await supabase
-    .from("goal_summary")
+    .from("goals")
     .select("*")
     .eq("id", id)
+    .eq("user_id", user.user.id)
     .single();
 
   if (error) throw error;
-  return data as GoalSummary;
+  return data as Goals;
 }
 
 /**
@@ -72,11 +70,16 @@ export async function getGoalById(id: string) {
  * @param updates Partial goal data to update
  * @returns The updated goal
  */
-export async function updateGoal(id: string, updates: Partial<Goal>) {
+export async function updateGoal(id: string, updates: Partial<Goals>) {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) throw new Error("User not authenticated");
+
   const { data, error } = await supabase
     .from("goals")
     .update(updates)
     .eq("id", id)
+    .eq("user_id", user.user.id)
     .select()
     .single();
 
@@ -90,7 +93,14 @@ export async function updateGoal(id: string, updates: Partial<Goal>) {
  * @returns true if successful
  */
 export async function deleteGoal(id: string) {
-  const { error } = await supabase.from("goals").delete().eq("id", id);
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) throw new Error("User not authenticated");
+  const { error } = await supabase
+    .from("goals")
+    .delete()
+    .eq("id", id)
+    .eq("user_id", user.user.id);
 
   if (error) throw error;
   return true;
@@ -107,7 +117,9 @@ export async function addGoalContribution(
   goalId: string,
   amount: number,
   description: string = "Goal Contribution",
+  category: string,
 ) {
+  const supabase = await createClient();
   const { data: user } = await supabase.auth.getUser();
   if (!user.user) throw new Error("User not authenticated");
 
@@ -115,12 +127,13 @@ export async function addGoalContribution(
   const { data: transaction, error: transactionError } = await supabase
     .from("transactions")
     .insert({
-      user_id: user.user.id,
-      title: description,
-      amount: amount,
+      amount,
+      category,
+      title: "Goal Contribution",
       transaction_date: new Date().toISOString().split("T")[0],
       transaction_type: "expense",
-      goal_id: goalId,
+      description,
+      user_id: user.user.id,
     })
     .select()
     .single();
@@ -150,11 +163,15 @@ export async function addGoalContribution(
  * @returns Array of contributions for the goal
  */
 export async function getGoalContributions(goalId: string) {
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  if (!user.user) throw new Error("User not authenticated");
+
   const { data, error } = await supabase
-    .from("goal_contributions_history")
+    .from("goal_contributions")
     .select("*")
     .eq("goal_id", goalId)
-    .order("contribution_date", { ascending: false });
+    .eq("user_id", user.user.id);
 
   if (error) throw error;
   return data;

@@ -4,7 +4,7 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <>
       {field.state.meta.isTouched && field.state.meta.errors.length ? (
-        <em className="absolute text-xs text-red-500 italic">
+        <em className="absolute self-end text-xs text-red-500 italic">
           {field.state.meta.errors[0].message}
         </em>
       ) : null}
