@@ -2,20 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { createBudget, updateBudget, deleteBudget } from "@/lib/budgets";
+import { AddBudget, Budgets } from "@/lib/types";
 
 /**
  * Add a new budget
  */
-export async function addBudget(formData: FormData) {
+export async function addBudget(data: AddBudget) {
   try {
-    const name = formData.get("name") as string;
-    const amount = parseFloat(formData.get("amount") as string);
-    const periodStart = formData.get("period_start") as string;
-    const periodEnd = formData.get("period_end") as string;
+    const { name, amount } = data;
 
-    // Validate required fields
-    if (!name || isNaN(amount) || !periodStart || !periodEnd) {
-      return { error: "Missing required fields" };
+    if (!name || !amount) {
+      throw new Error("Missing required fields");
     }
 
     // Create the budget
@@ -27,28 +24,24 @@ export async function addBudget(formData: FormData) {
     });
 
     // Revalidate the budgets page to show the new budget
-    revalidatePath("/budgets");
+    revalidatePath("/dashboard/budgets");
 
     return { success: true, budget };
   } catch (error) {
     console.error("Error adding budget:", error);
-    return { error: "Failed to add budget" };
+    throw error;
   }
 }
 
 /**
  * Update an existing budget
  */
-export async function editBudget(id: string, formData: FormData) {
+export async function editBudget(id: string, budgets: Budgets) {
   try {
-    const name = formData.get("name") as string;
-    const amount = parseFloat(formData.get("amount") as string);
-    const periodStart = formData.get("period_start") as string;
-    const periodEnd = formData.get("period_end") as string;
+    const { name, amount } = budgets;
 
-    // Validate required fields
-    if (!name || isNaN(amount) || !periodStart || !periodEnd) {
-      return { error: "Missing required fields" };
+    if (!name || !amount) {
+      throw new Error("Missing required fields");
     }
 
     // Update the budget
@@ -58,13 +51,13 @@ export async function editBudget(id: string, formData: FormData) {
     });
 
     // Revalidate the budgets page to show the updated budget
-    revalidatePath("/budgets");
-    revalidatePath(`/budgets/${id}`);
+    revalidatePath("/dashboard/budgets");
+    revalidatePath(`/dashboard/budgets/${id}`);
 
     return { success: true, budget };
   } catch (error) {
     console.error("Error updating budget:", error);
-    return { error: "Failed to update budget" };
+    throw error;
   }
 }
 

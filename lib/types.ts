@@ -21,6 +21,10 @@ export type AddGoal = Omit<
 >;
 
 export type Budgets = Tables<"budgets">;
+export type AddBudget = Omit<
+  Budgets,
+  "id" | "user_id" | "created_at" | "updated_at" | "remaining" | "spent"
+>;
 
 export type TransactionsColumn = Omit<
   Transactions,
