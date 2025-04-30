@@ -10,41 +10,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const spendingData = [
-  {
-    name: "Rent & Utilities",
-    value: 3000,
-    percentage: "35%",
-    color: "hsl(215, 25%, 27%)",
-  },
-  {
-    name: "Transportation",
-    value: 1400,
-    percentage: "20%",
-    color: "hsl(43, 96%, 56%)",
-  },
-  {
-    name: "Savings & Investments",
-    value: 1100,
-    percentage: "18%",
-    color: "hsl(172, 66%, 30%)",
-  },
-  { name: "Shopping", value: 500, percentage: "12%", color: "hsl(0, 0%, 85%)" },
-  {
-    name: "Entertainment",
-    value: 300,
-    percentage: "10%",
-    color: "hsl(0, 0%, 95%)",
-  },
-  {
-    name: "Dining & Groceries",
-    value: 800,
-    percentage: "5.25%",
-    color: "hsl(173, 58%, 85%)",
-  },
-];
-
-export function SpendingDistributionChart() {
+export function SpendingDistributionChart({
+  spendingData,
+}: {
+  spendingData: {
+    name: string;
+    value: number;
+    color: string;
+  }[];
+}) {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -86,9 +60,6 @@ export function SpendingDistributionChart() {
                   <div className="flex gap-4">
                     <span className="text-sm font-medium">
                       ₱{item.value.toLocaleString()}
-                    </span>
-                    <span className="text-muted-foreground w-12 text-right text-sm">
-                      {item.percentage}
                     </span>
                   </div>
                 </div>

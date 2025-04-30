@@ -1,11 +1,4 @@
-import {
-  BotMessageSquare,
-  Goal,
-  Home,
-  Inbox,
-  PieChart,
-  PlusCircleIcon,
-} from "lucide-react";
+import { Bot, Goal, Home, Inbox, PieChart } from "lucide-react";
 
 import {
   Sidebar,
@@ -43,11 +36,6 @@ const items = [
     url: "/dashboard/goals",
     icon: Goal,
   },
-  {
-    title: "AI Assistant",
-    url: "/dashboard/assistant",
-    icon: BotMessageSquare,
-  },
 ];
 
 export const AppSidebar = () => {
@@ -71,7 +59,7 @@ export const AppSidebar = () => {
                   tooltip="Quick Create"
                   className="text-primary-foreground hover:text-primary-foreground active:text-primary-foreground min-w-8 bg-slate-800 py-6 duration-200 ease-linear hover:bg-slate-800/90 active:bg-slate-800/90"
                 >
-                  <PlusCircleIcon />
+                  <Bot />
                   <span>Quick Create</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>

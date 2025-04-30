@@ -1,13 +1,11 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -20,21 +18,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  { month: "January", income: 186, expenses: 80 },
-  { month: "February", income: 305, expenses: 200 },
-  { month: "March", income: 237, expenses: 120 },
-  { month: "April", income: 73, expenses: 190 },
-  { month: "May", income: 209, expenses: 130 },
-  { month: "June", income: 214, expenses: 140 },
-  { month: "July", income: 253, expenses: 160 },
-  { month: "August", income: 290, expenses: 175 },
-  { month: "September", income: 265, expenses: 155 },
-  { month: "October", income: 228, expenses: 145 },
-  { month: "November", income: 320, expenses: 210 },
-  { month: "December", income: 345, expenses: 230 },
-];
-
 const chartConfig = {
   income: {
     label: "Income",
@@ -46,7 +29,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ExpenseIncomeChart() {
+export function ExpenseIncomeChart({
+  chartData,
+}: {
+  chartData: {
+    month: string;
+    income: number;
+    expenses: number;
+  }[];
+}) {
   return (
     <Card>
       <CardHeader>
@@ -91,15 +82,6 @@ export function ExpenseIncomeChart() {
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="text-muted-foreground leading-none">
-          Compared to last month, your income has increased by 5.2% and your
-          expenses have decreased by 2.1%
-        </div>
-      </CardFooter>
     </Card>
   );
 }
